@@ -52,24 +52,22 @@ def diabetes_linear_pipeline():
         test_r2,
         top_3_feature_indices (list length 3)
     """
-    # STEP 1
+  
     X, y = load_diabetes(return_X_y=True)
 
-    # STEP 2
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
 
-    # STEP 3 (Fit only on training data)
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    # STEP 4
+
     model = LinearRegression()
     model.fit(X_train_scaled, y_train)
 
-    # STEP 5
+ 
     train_pred = model.predict(X_train_scaled)
     test_pred = model.predict(X_test_scaled)
 
@@ -79,7 +77,6 @@ def diabetes_linear_pipeline():
     train_r2 = r2_score(y_train, train_pred)
     test_r2 = r2_score(y_test, test_pred)
 
-    # STEP 6 – Feature importance via coefficient magnitude
     importance = np.abs(model.coef_)
     top_3_feature_indices = np.argsort(importance)[-3:].tolist()
 
@@ -108,18 +105,17 @@ def diabetes_cross_validation():
         mean_r2,
         std_r2
     """
-    # STEP 1
+ 
     X, y = load_diabetes(return_X_y=True)
 
-    # STEP 2 (Standardize full dataset for CV)
+
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # STEP 3
+
     model = LinearRegression()
     scores = cross_val_score(model, X_scaled, y, cv=5, scoring='r2')
 
-    # STEP 4
     mean_r2 = np.mean(scores)
     std_r2 = np.std(scores)
 
@@ -156,24 +152,24 @@ def cancer_logistic_pipeline():
         recall,
         f1
     """
-    # STEP 1
+
     X, y = load_breast_cancer(return_X_y=True)
 
-    # STEP 2
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
 
-    # STEP 3
+
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    # STEP 4
+
     model = LogisticRegression(max_iter=5000, solver="liblinear")
     model.fit(X_train_scaled, y_train)
 
-    # STEP 5
+
     train_pred = model.predict(X_train_scaled)
     test_pred = model.predict(X_test_scaled)
 
@@ -184,7 +180,7 @@ def cancer_logistic_pipeline():
     recall = recall_score(y_test, test_pred)
     f1 = f1_score(y_test, test_pred)
 
-    # Confusion matrix (not returned, but useful)
+    
     cm = confusion_matrix(y_test, test_pred)
 
     """
@@ -226,22 +222,19 @@ def cancer_logistic_regularization():
     RETURN:
         results_dictionary
     """
-    # STEP 1
+
     X, y = load_breast_cancer(return_X_y=True)
 
-    # STEP 2
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
 
-    # STEP 3
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
     results = {}
 
-    # STEP 4
     for C in [0.01, 0.1, 1, 10, 100]:
 
         model = LogisticRegression(max_iter=5000, solver="liblinear")
@@ -285,18 +278,15 @@ def cancer_cross_validation():
         mean_accuracy,
         std_accuracy
     """
-    # STEP 1
+   
     X, y = load_breast_cancer(return_X_y=True)
 
-    # STEP 2
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # STEP 3
     model = LogisticRegression(C=1, max_iter=5000, solver="liblinear")
     scores = cross_val_score(model, X_scaled, y, cv=5, scoring='accuracy')
 
-    # STEP 4
     mean_accuracy = np.mean(scores)
     std_accuracy = np.std(scores)
 
